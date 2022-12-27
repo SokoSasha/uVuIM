@@ -15,6 +15,12 @@ class Model{
 		void removeLine(int);
 		MyString remTabs(MyString);
 
+		void Insert(int, int, int, char);
+
+		int lastLineSize();
+		int modelSize();
+		int lineSize(int);
+
 		friend class View;
 		friend class Controller;
 

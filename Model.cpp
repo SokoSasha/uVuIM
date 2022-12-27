@@ -23,3 +23,19 @@ MyString Model::remTabs(MyString line){
   else
     return remTabs(line.replace(tab, 1, "    "));
 }
+
+int Model::lastLineSize(){
+  return lines[lines.size() - 1].size();
+}
+
+int Model::modelSize(){
+  return lines.size();
+}
+
+int Model::lineSize(int l){
+  return lines[l].size();
+}
+
+void Model::Insert(int l, int idx, int count, char chr){
+  lines[l].insert(idx, count, chr);
+}

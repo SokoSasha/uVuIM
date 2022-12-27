@@ -9,7 +9,8 @@
 
 class View{
 	private:
-	#define curLine y + offsetLine
+	#define curLine (y + offsetLine)
+	#define WNDW (LINES - 2)
 		int x, y;
 		int offsetLine;
 		MyString status;
@@ -21,6 +22,9 @@ class View{
 
 		void PageUp();
 		void PageDown();
+
+		void Home();
+		void End();
 
 		void BackSpace();
 		void DeleteRight();

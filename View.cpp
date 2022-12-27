@@ -18,20 +18,20 @@ void View::Up(){
 		offsetLine--;
 	else
 		beep();
-	if (x > model.lines[curLine].length())
-		x = model.lines[curLine].length();
+	if (x > model.lineSize(curLine))
+		x = model.lineSize(curLine);
 	move(y, x);
 }
 
 void View::Down(){
-	if (y < LINES - 3 && curLine < model.lines.size() - 1)
+	if (y < WNDW - 1 && curLine < model.modelSize() - 1)
 		y++;
-	else if (y == LINES - 3 && model.lines.size() - 1 > curLine)
+	else if (y == WNDW - 1 && model.modelSize() - 1 > curLine)
 		offsetLine++;
 	else
 		beep();
-	if (x > model.lines[curLine].length())
-		x = model.lines[curLine].length();
+	if (x > model.lineSize(curLine))
+		x = model.lineSize(curLine);
 	move(y, x);
 }
 
@@ -41,11 +41,11 @@ void View::Left(){
 	else if (x == 0){
 		if (y > 0){
 			y--;
-			x = model.lines[curLine].length();
+			x = model.lineSize(curLine);
 		}
 		else if (y==0 && offsetLine > 0){
 			offsetLine--;
-			x = model.lines[curLine].length();
+			x = model.lineSize(curLine);
 		}
 		else
 			beep();
@@ -54,11 +54,11 @@ void View::Left(){
 }
 
 void View::Right(){
-	if (x < model.lines[curLine].length()){
+	if (x < model.lineSize(curLine)){
 		x++;
 	}
-	else if (x == model.lines[curLine].length() && curLine < model.lines.size() - 1){
-		if (y < LINES - 2)
+	else if (x == model.lineSize(curLine) && curLine < model.modelSize() - 1){
+		if (y < WNDW)
 			y++;
 		else
 			offsetLine++;
@@ -70,22 +70,39 @@ void View::Right(){
 }
 
 void View::PageUp(){
-	if (offsetLine > LINES - 2) offsetLine -= LINES - 2;
+	if (offsetLine > WNDW) offsetLine -= WNDW;
 	else if (offsetLine != 0)
 		offsetLine = 0;
 	else beep();
-	if (x > model.lines[curLine].length())
-		x = model.lines[curLine].length();
+	if (x > model.lineSize(curLine))
+		x = model.lineSize(curLine);
 }
 
 void View::PageDown(){
-	if (offsetLine + LINES * 2 - 2 <= model.lines.size()) offsetLine += LINES - 2;
-	else if (offsetLine + LINES - 2 < model.lines.size())
-		offsetLine = model.lines.size() - LINES + 2;
+	if (offsetLine + WNDW * 2 + 2 <= model.modelSize()) offsetLine += WNDW;
+	else if (offsetLine + WNDW < model.modelSize())
+		offsetLine = model.modelSize() - WNDW;
 	else
 		beep();
-	if (x > model.lines[curLine].length())
-		x = model.lines[curLine].length();
+	if (x > model.lineSize(curLine))
+		x = model.lineSize(curLine);
+}
+
+void View::Home(){
+	offsetLine = 0;
+	x = 0;
+	y = 0;
+}
+
+void View::End(){
+	offsetLine = model.modelSize() - WNDW;
+	x = model.lastLineSize();
+	if (model.modelSize() > WNDW){
+		offsetLine = model.modelSize() - WNDW;
+		y = WNDW - 1;
+	}
+	else
+		y = model.modelSize();
 }
 
 void View::BackSpace(){
@@ -105,25 +122,25 @@ void View::BackSpace(){
 }
 
 void View::DeleteRight(){
-	if(x == model.lines[curLine].length() and curLine != model.lines.size() - 1){
+	if(x == model.lineSize(curLine) and curLine != model.modelSize() - 1){
 		model.lines[curLine] += model.lines[curLine + 1];
 		deleteLine(curLine + 1);
 	}
-	else if (x != model.lines[curLine].length())
+	else if (x != model.lineSize(curLine))
 		model.lines[curLine].erase(x, 1);
 	else
 		beep();
 }
 
 void View::TabKey(){
-	model.lines[curLine].insert(x, 4, ' ');
+	model.Insert(curLine, x, 4, ' ');
 		x += 4;
 }
 
 void View::EnterKey(){
-	if (x < model.lines[curLine].length()){
-		model.insertLine(model.lines[curLine].substr(x, model.lines[curLine].length() - x), curLine + 1);
-		model.lines[curLine].erase(x, model.lines[curLine].length() - x);
+	if (x < model.lineSize(curLine)){
+		model.insertLine(model.lines[curLine].substr(x, model.lineSize(curLine) - x), curLine + 1);
+		model.lines[curLine].erase(x, model.lineSize(curLine) - x);
 	}
 	else{
 		model.insertLine("", curLine + 1);
@@ -146,13 +163,13 @@ void View::AddChar(char c){
 		y++;
 		model.appendLine("");
 	}
-	model.lines[curLine].insert(x, 1, c);
+	model.Insert(curLine, x, 1, c);
 	x++;
 }
 
 void View::printLine(){
-	for (int i = 0; i < LINES - 2 && i + offsetLine < model.lines.size(); i++){
-		if (i + offsetLine > model.lines.size()){
+	for (int i = 0; i < WNDW && i + offsetLine < model.modelSize(); i++){
+		if (i + offsetLine > model.modelSize()){
 			move(i, 0);
 			clrtoeol();
 		}
@@ -193,7 +210,7 @@ void View::updateStatus(char mode){
 		status.erase(cols, status.size());
 
 	status += "\tCOL: " + to_string(x) + "\tROW: " + to_string(curLine) +
-		"\tTotal: " + to_string(model.lines.size()) + "\toffsetLine: " + to_string(offsetLine); //Надо добавить этот метод
+		"\tTotal: " + to_string(model.modelSize()) + "\toffsetLine: " + to_string(offsetLine); //Надо добавить этот метод
 }
 
 void View::updateStatus(MyString extra){

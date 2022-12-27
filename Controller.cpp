@@ -82,6 +82,13 @@ void Controller::proccesNavigation(int c){
 	string temp;
 	back:
 	switch(c){
+		case 'G':
+			view.Home();
+			break;
+		case 'g':
+			if (getch() == 'g')
+				view.End();
+			break;
 		/*case 'q':
 			mode = 'q';
 			view.updateStatus(mode);
