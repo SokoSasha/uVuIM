@@ -57,6 +57,12 @@ void Controller::handleInput(int c){
 		case KEY_DOWN:
 			view.Down();
 			return;
+		case KEY_PPAGE:
+			view.PageUp();
+			return;
+		case KEY_NPAGE:
+			view.PageDown();
+			return;
 	}
 
 	switch(mode){

@@ -31,7 +31,7 @@ void View::Down(){
 	else
 		beep();
 	if (x > model.lines[curLine].length())
-			x = model.lines[curLine].length();
+		x = model.lines[curLine].length();
 	move(y, x);
 }
 
@@ -67,6 +67,25 @@ void View::Right(){
 	else
 		beep();
 	move(y, x);
+}
+
+void View::PageUp(){
+	if (offsetLine > LINES - 2) offsetLine -= LINES - 2;
+	else if (offsetLine != 0)
+		offsetLine = 0;
+	else beep();
+	if (x > model.lines[curLine].length())
+		x = model.lines[curLine].length();
+}
+
+void View::PageDown(){
+	if (offsetLine + LINES * 2 - 2 <= model.lines.size()) offsetLine += LINES - 2;
+	else if (offsetLine + LINES - 2 < model.lines.size())
+		offsetLine = model.lines.size() - LINES + 2;
+	else
+		beep();
+	if (x > model.lines[curLine].length())
+		x = model.lines[curLine].length();
 }
 
 void View::BackSpace(){
@@ -173,7 +192,8 @@ void View::updateStatus(char mode){
 	if (cols != -1)
 		status.erase(cols, status.size());
 
-	status += "\tCOL: " + to_string(x) + "\tROW: " + to_string(curLine); //Надо добавить этот метод
+	status += "\tCOL: " + to_string(x) + "\tROW: " + to_string(curLine) +
+		"\tTotal: " + to_string(model.lines.size()) + "\toffsetLine: " + to_string(offsetLine); //Надо добавить этот метод
 }
 
 void View::updateStatus(MyString extra){

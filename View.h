@@ -19,6 +19,9 @@ class View{
 		void Left();
 		void Right();
 
+		void PageUp();
+		void PageDown();
+
 		void BackSpace();
 		void DeleteRight();
 		void EnterKey();
