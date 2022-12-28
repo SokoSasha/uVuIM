@@ -17,8 +17,11 @@ class Model{
 
 		void Insert(int, int, int, char);
 
+		//Gets size of the last line
 		int lastLineSize();
+		//Gets total number of lines
 		int modelSize();
+		//Gets size of a line
 		int lineSize(int);
 
 		friend class View;

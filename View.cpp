@@ -105,6 +105,14 @@ void View::End(){
 		y = model.modelSize();
 }
 
+void View::moveStart(){
+	x = 0;
+}
+
+void View::moveEnd(){
+	x = model.lineSize(curLine);
+}
+
 void View::BackSpace(){
 	if (x == 0 && y != 0){
 		x = model.lines[curLine - 1].length();

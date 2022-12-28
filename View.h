@@ -9,8 +9,8 @@
 
 class View{
 	private:
-	#define curLine (y + offsetLine)
-	#define WNDW (LINES - 2)
+	#define curLine (y + offsetLine) //A "pointer" to a current line among whole vector of lines
+	#define WNDW (LINES - 2) //Size of a window which displays text
 		int x, y;
 		int offsetLine;
 		MyString status;
@@ -25,6 +25,9 @@ class View{
 
 		void Home();
 		void End();
+
+		void moveStart();
+		void moveEnd();
 
 		void BackSpace();
 		void DeleteRight();
