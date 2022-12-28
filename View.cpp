@@ -118,6 +118,10 @@ void View::wordEnd(){ //Почему-то застревает после 1 ис
 	while(1){
 		pos = model.wordEnd(curLine, x);
 		if (x == model.lineSize(curLine) or pos == model.lineSize(curLine)){
+			if (curLine == model.modelSize() - 1){
+				beep();
+				return;
+			}
 			Right();
 			continue;
 		}
