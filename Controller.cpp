@@ -79,6 +79,7 @@ void Controller::handleInput(int c){
 }
 
 void Controller::proccesNavigation(int c){
+	//check
 	string temp;
 	back:
 	switch(c){
