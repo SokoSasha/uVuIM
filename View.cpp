@@ -113,6 +113,37 @@ void View::moveEnd(){
 	x = model.lineSize(curLine);
 }
 
+void View::wordEnd(){ //Почему-то застревает после 1 использования, хотя сама программа не виснет
+	int pos;
+	while(1){
+		pos = model.wordEnd(curLine, x);
+		if (x == model.lineSize(curLine) or pos == model.lineSize(curLine)){
+			Right();
+			continue;
+		}
+		break;
+	}
+	if (pos == -1){
+		x = model.lineSize(curLine) ? model.lineSize(curLine) : x;
+		return;
+	}
+	if (pos == x){
+		while(1){
+			pos = model.wordEnd(curLine, x);
+			if (x == model.lineSize(curLine) or pos == model.lineSize(curLine)){
+				Right();
+				continue;
+			}
+			break;
+		}
+		if (pos == -1){
+			x = model.lineSize(curLine) ? model.lineSize(curLine) : x;
+			return;
+		}
+	}
+	x = pos;
+}
+
 void View::BackSpace(){
 	if (x == 0 && y != 0){
 		x = model.lines[curLine - 1].length();

@@ -24,6 +24,8 @@ class Model{
 		//Gets size of a line
 		int lineSize(int);
 
+		int wordEnd(int l, int idx);
+
 		friend class View;
 		friend class Controller;
 

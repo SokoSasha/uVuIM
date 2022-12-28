@@ -29,6 +29,8 @@ class View{
 		void moveStart();
 		void moveEnd();
 
+		void wordEnd();
+
 		void BackSpace();
 		void DeleteRight();
 		void EnterKey();

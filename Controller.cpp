@@ -63,6 +63,10 @@ void Controller::handleInput(int c){
 		case KEY_NPAGE:
 			view.PageDown();
 			return;
+		case KEY_EXIT:
+		case 27:
+			mode = 'n';
+			return;
 	}
 
 	switch(mode){
@@ -79,7 +83,6 @@ void Controller::handleInput(int c){
 }
 
 void Controller::proccesNavigation(int c){
-	//check
 	string temp;
 	back:
 	switch(c){
@@ -95,6 +98,9 @@ void Controller::proccesNavigation(int c){
 			break;
 		case '$':
 			view.moveEnd();
+			break;
+		case 'w':
+			view.wordEnd();
 			break;
 		/*case 'q':
 			mode = 'q';
@@ -150,7 +156,7 @@ void Controller::proccesInsert(int c){
 		case KEY_EXIT:
 		case 27:
 			mode = 'n';
-			break;
+			return;
 		case 127:
 		case KEY_BACKSPACE:
 			view.BackSpace();
@@ -207,6 +213,10 @@ void Controller::proccesCommand(int c){
 	move(view.y, view.x);
 	MyString temp;
 	switch(c){
+	case KEY_EXIT:
+	case 27:
+		mode = 'n';
+		return;
 	case 'o':
 		view.updateStatus("o ");
 		view.printStatusLine();
