@@ -129,7 +129,7 @@ void View::wordEnd(){ //Почему-то застревает после 1 ис
 	}
 	if (pos == x){
 		while(1){
-			pos = model.wordEnd(curLine, x);
+			pos = model.wordEnd(curLine, x + 1);
 			if (x == model.lineSize(curLine) or pos == model.lineSize(curLine)){
 				Right();
 				continue;

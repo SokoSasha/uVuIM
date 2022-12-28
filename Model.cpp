@@ -48,6 +48,11 @@ int Model::wordEnd(int l, int idx){
 	for (; i < 28; i++){
 		size_t tmp = lines[l].find(table[i], idx);
 		if (tmp != -1){
+			if (lines[l][tmp - 1] == lines[l][tmp] and idx < lineSize(l)){
+				i = 0;
+				idx++;
+				continue;
+			}
 			/*if ((lines[l][tmp] < 'A' or lines[l][tmp] > 'Z') and (lines[l][tmp] < 'a' or lines[l][tmp] > 'z') and (lines[l][tmp] < '0' and lines[l][tmp] > '9')){
 				i = 0;
 				idx++;
