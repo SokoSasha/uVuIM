@@ -4,6 +4,8 @@ Controller::Controller(MyString FN) : Controller::Controller(){
       filename = FN;
       ifstream inFile(filename.data());
       if (inFile.is_open()){
+			while(model.modelSize() > 0)
+				model.removeLine(0);
 			while(!inFile.eof()){
 					string temp;
 					getline(inFile, temp);  //Возможно придется добавить этот метод
@@ -25,7 +27,6 @@ Controller::Controller() {
 	mode = 'n';
 	filename = "untitled";
 
-	view.AddChar('M');
 	model = Model();
 	view = View();
 }
@@ -102,13 +103,26 @@ void Controller::proccesNavigation(int c){
 		case 'w':
 			view.wordEnd();
 			break;
-		/*case 'q':
-			mode = 'q';
-			view.updateStatus(mode);
-			view.printStatusLine();
-			if (getch() != 10)
-			mode = 'n';
-			break;*/
+		case 'b':
+			view.wordStart();
+			break;
+		case 'x':
+			view.DeleteRight();
+			break;
+		case 'd':
+			c = getch();
+			if (c == 'i'){
+				if (getch() == 'w')
+					view.deleteWord();
+			}
+			if (c == 'd'){
+				view.cutLine();
+				break;
+			}
+			break;
+		case 'y':
+			view.copyLine();
+			break;
 		case 'I':
 			view.x = 0;
 			move(view.y, view.x);

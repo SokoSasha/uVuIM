@@ -10,6 +10,8 @@ class Model{
 	public:
 		Model();
 
+		char table[28] = {' ', '!', '^', '&', '*', '(', ')', '-', '=', '+', '[', '{', ']', '}', '\\', '|', ',', '<', '.', '>', '/', '?', '`', '~', ';', ':', '\'', '\"'};
+
 		void insertLine(MyString, int);
 		void appendLine(MyString);
 		void removeLine(int);
@@ -17,20 +19,25 @@ class Model{
 
 		void Insert(int, int, int, char);
 
-		//Gets size of the last line
 		int lastLineSize();
-		//Gets total number of lines
 		int modelSize();
-		//Gets size of a line
-		int lineSize(int);
+		int lineSize(int line);
 
-		int wordEnd(int l, int idx);
+		int wordEnd(int line, int idx);
+		int wordStart(int line, int idx);
+
+		void deleteWord(int line, int start, int end);
+
+		void copyToBuf(MyString line);
+		void copyToBuf(int line);
+		MyString getBuf();
 
 		friend class View;
 		friend class Controller;
 
 	private:
 		vector<MyString> lines;
+		MyString buffer;
 };
 
 #endif

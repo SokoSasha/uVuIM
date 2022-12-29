@@ -32,35 +32,66 @@ int Model::modelSize(){
 	return lines.size();
 }
 
-int Model::lineSize(int l){
-	return lines[l].size();
+int Model::lineSize(int line){
+	return lines[line].size();
 }
 
-void Model::Insert(int l, int idx, int count, char chr){
-	lines[l].insert(idx, count, chr);
+void Model::Insert(int line, int idx, int count, char chr){
+	lines[line].insert(idx, count, chr);
 }
 
-int Model::wordEnd(int l, int idx){
-	string table[] = {" ", "!", "^", "&", "*", "(", ")", "-", "=", "+", "[", "{", "]", "}", "\\", "|", ",", "<", ".", ">", "/", "?", "`", "~", ";", ":", "\'", "\""};
-
+int Model::wordEnd(int line, int idx){
 	size_t res = -1;
 	int i = 0;
 	for (; i < 28; i++){
-		size_t tmp = lines[l].find(table[i], idx);
+		MyString chr(1, table[i]);
+		size_t tmp = lines[line].find(chr.data(), idx);
 		if (tmp != -1){
-			if (tmp != 0 and lines[l][tmp - 1] == lines[l][tmp] and idx < lineSize(l)){
-				i = 0;
-				idx++;
-				continue;
-			}
-			/*if ((lines[l][tmp] < 'A' or lines[l][tmp] > 'Z') and (lines[l][tmp] < 'a' or lines[l][tmp] > 'z') and (lines[l][tmp] < '0' and lines[l][tmp] > '9')){
+			/*if (tmp != 0 and lines[line][tmp - 1] == lines[line][tmp] and idx < lineSize(line)){
 				i = 0;
 				idx++;
 				continue;
 			}*/
-			res = min(res, tmp);
+			res = (res == -1) ? tmp : min(res, tmp);
 		}
 	}
 
 	return res;
+}
+
+int Model::wordStart(int line, int idx){
+	int tmp = idx;
+	while(1){
+		tmp--;
+		if (tmp == -1)
+			return -1;
+
+		int i = 0;
+		int res = - 1;
+		for (; i < 28; i++){
+			if (tmp == lineSize(line) - 1)
+				break;
+
+			if (lines[line][tmp] == table[i]/* and lines[line][tmp + 1] != lines[line][tmp] and tmp != idx - 1*/)
+				res = (res == -1) ? tmp : min(res, tmp);
+		}
+		if (res != -1 or (res == -1 and tmp == 0))
+			return res + 1;
+	}
+}
+
+void Model::deleteWord(int line, int start, int end){
+	lines[line].erase(start, end - start + 1);
+}
+
+void Model::copyToBuf(MyString line){
+	buffer = line;
+}
+
+void Model::copyToBuf(int line){
+	buffer = lines[line];
+}
+
+MyString Model::getBuf(){
+	return buffer;
 }

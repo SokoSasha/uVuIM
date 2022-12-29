@@ -15,10 +15,10 @@ class View{
 		int offsetLine;
 		MyString status;
 
-		void Up();
-		void Down();
-		void Left();
-		void Right();
+		bool Up();
+		bool Down();
+		bool Left();
+		bool Right();
 
 		void PageUp();
 		void PageDown();
@@ -30,6 +30,8 @@ class View{
 		void moveEnd();
 
 		void wordEnd();
+		void wordStart();
+		void deleteWord();
 
 		void BackSpace();
 		void DeleteRight();
@@ -43,6 +45,9 @@ class View{
 		void AddChar(char);
 		void deleteLine();
 		void deleteLine(int);
+
+		void copyLine();
+		void cutLine();
 
 	public:
 		View();

@@ -11,31 +11,35 @@ View::View(){
 	model.appendLine("");
 }
 
-void View::Up(){
+bool View::Up(){
 	if (y > 0)
 		y--;
 	else if (y == 0 && offsetLine > 0)
 		offsetLine--;
-	else
+	else{
 		beep();
+		return 0;
+	}
 	if (x > model.lineSize(curLine))
 		x = model.lineSize(curLine);
-	move(y, x);
+	return 1;
 }
 
-void View::Down(){
+bool View::Down(){
 	if (y < WNDW - 1 && curLine < model.modelSize() - 1)
 		y++;
 	else if (y == WNDW - 1 && model.modelSize() - 1 > curLine)
 		offsetLine++;
-	else
+	else{
 		beep();
+		return 0;
+	}
 	if (x > model.lineSize(curLine))
 		x = model.lineSize(curLine);
-	move(y, x);
+	return 1;
 }
 
-void View::Left(){
+bool View::Left(){
 	if (x > 0)
 		x--;
 	else if (x == 0){
@@ -47,13 +51,15 @@ void View::Left(){
 			offsetLine--;
 			x = model.lineSize(curLine);
 		}
-		else
+		else{
 			beep();
+			return 0;
+		}
 	}
-	move(y, x);
+	return 1;
 }
 
-void View::Right(){
+bool View::Right(){
 	if (x < model.lineSize(curLine)){
 		x++;
 	}
@@ -64,9 +70,11 @@ void View::Right(){
 			offsetLine++;
 		x = 0;
 	}
-	else
+	else{
 		beep();
-	move(y, x);
+		return 0;
+	}
+	return 1;
 }
 
 void View::PageUp(){
@@ -89,20 +97,18 @@ void View::PageDown(){
 }
 
 void View::Home(){
-	offsetLine = 0;
-	x = 0;
-	y = 0;
+	if (offsetLine != 0)
+		offsetLine = 0;
+	else beep();
 }
 
 void View::End(){
-	offsetLine = model.modelSize() - WNDW;
-	x = model.lastLineSize();
 	if (model.modelSize() > WNDW){
 		offsetLine = model.modelSize() - WNDW;
-		y = WNDW - 1;
+		if (x > model.lastLineSize())
+			x = model.lastLineSize();
 	}
-	else
-		y = model.modelSize();
+	else beep();
 }
 
 void View::moveStart(){
@@ -113,39 +119,79 @@ void View::moveEnd(){
 	x = model.lineSize(curLine);
 }
 
-void View::wordEnd(){ //Почему-то застревает после 1 использования, хотя сама программа не виснет
-	int pos;
+void View::wordEnd(){
+	if (x == model.lineSize(curLine)){
+		if (!Right())
+			return;
+	}
+	int pos = x;
 	while(1){
-		pos = model.wordEnd(curLine, x);
-		if (x == model.lineSize(curLine) or pos == model.lineSize(curLine)){
-			if (curLine == model.modelSize() - 1){
-				beep();
+		pos = model.wordEnd(curLine, pos);
+		if (pos == -1 or pos == x or pos == 0 or model.lines[curLine][pos] == model.lines[curLine][pos - 1]){
+			if (!Right())
 				return;
-			}
-			Right();
-			continue;
 		}
-		break;
-	}
-	if (pos == -1){
-		x = model.lineSize(curLine) ? model.lineSize(curLine) : x;
-		return;
-	}
-	if (pos == x){
-		while(1){
-			pos = model.wordEnd(curLine, x + 1);
-			if (x == model.lineSize(curLine) or pos == model.lineSize(curLine)){
-				Right();
-				continue;
-			}
-			break;
-		}
-		if (pos == -1){
-			x = model.lineSize(curLine) ? model.lineSize(curLine) : x;
+		else{
+			x = pos;
 			return;
 		}
+		pos = x;
 	}
-	x = pos;
+}
+
+void View::wordStart(){
+	if (x == 0){
+		if (!Left())
+			return;
+	}
+	int pos = x;
+	while(1){
+		pos = model.wordStart(curLine, pos);
+		if (pos == -1 or pos == x or pos == model.lineSize(curLine) or model.lines[curLine][pos] == model.lines[curLine][pos + 1]){
+			if (!Left())
+				return;
+		}
+		else{
+			x = pos;
+			return;
+		}
+		pos = x;
+	}
+}
+
+void View::deleteWord(){
+
+	bool ok = false;
+	for (int i = 0; i < 28; i++){
+		if (model.lines[curLine][x] == model.table[i])
+			ok = ok + true;
+	}
+	if (ok){
+		beep();
+		return;
+	}
+
+	int start = model.wordStart(curLine, x);
+	updateStatus("do start = " + to_string(start));
+	printStatusLine();
+	getch();
+	if (start == -1)
+		start = 0;
+
+	updateStatus("posle start = " + to_string(start));
+	printStatusLine();
+	getch();
+
+	int end = model.wordEnd(curLine, x);
+	if (end == -1)
+		end = model.lineSize(curLine) - 1;
+
+	updateStatus(", end = " + to_string(end));
+	printStatusLine();
+	getch();
+
+	model.deleteWord(curLine, start, end);
+	x = start;
 }
 
 void View::BackSpace(){
@@ -278,4 +324,15 @@ void View::statusAddChar(int c){
 	status.append(1, (char)c);
 	x++;
 	move(y, x);
+}
+
+void View::copyLine(){
+	model.copyToBuf(curLine);
+}
+
+void View::cutLine(){
+	copyLine();
+	model.removeLine(curLine);
+	if (x > model.lineSize(curLine))
+		x = model.lineSize(curLine);
 }
