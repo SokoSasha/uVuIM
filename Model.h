@@ -30,7 +30,7 @@ class Model{
 
 		void copyToBuf(MyString line);
 		void copyToBuf(int line);
-		MyString getBuf();
+		void insertBuf(int line, int idx);
 
 		friend class View;
 		friend class Controller;

@@ -28,6 +28,7 @@ class View{
 
 		void moveStart();
 		void moveEnd();
+		void moveToLine(int line);
 
 		void wordEnd();
 		void wordStart();
@@ -48,6 +49,8 @@ class View{
 
 		void copyLine();
 		void cutLine();
+		void copyWord();
+		void insertBuffer();
 
 	public:
 		View();

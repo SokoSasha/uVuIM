@@ -119,6 +119,27 @@ void View::moveEnd(){
 	x = model.lineSize(curLine);
 }
 
+void View::moveToLine(int line){
+	if (line > model.modelSize()){
+		beep();
+		return;
+	}
+	if (line > offsetLine + WNDW or line < offsetLine){
+		if (line > model.modelSize() - WNDW){
+			offsetLine = model.modelSize() - WNDW;
+			y = line - offsetLine;
+		}
+		else {
+			offsetLine = line;
+			y = 0;
+		}
+	}
+	else
+		y = line - offsetLine;
+
+	x = 0;
+}
+
 void View::wordEnd(){
 	if (x == model.lineSize(curLine)){
 		if (!Right())
@@ -320,7 +341,6 @@ void View::statusDelete(){
 }
 
 void View::statusAddChar(int c){
-	cout << 2.31 << endl;
 	status.append(1, (char)c);
 	x++;
 	move(y, x);
@@ -335,4 +355,15 @@ void View::cutLine(){
 	model.removeLine(curLine);
 	if (x > model.lineSize(curLine))
 		x = model.lineSize(curLine);
+}
+
+void View::copyWord(){
+	int start = model.wordStart(curLine, x);
+	int end = model.wordEnd(curLine, x);
+	MyString bufLine = model.lines[curLine].substr(start, end - start + 1);
+	model.copyToBuf(bufLine);
+}
+
+void View::insertBuffer(){
+	model.insertBuf(curLine, x);
 }

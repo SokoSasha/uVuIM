@@ -117,11 +117,19 @@ void Controller::proccesNavigation(int c){
 			}
 			if (c == 'd'){
 				view.cutLine();
-				break;
 			}
 			break;
 		case 'y':
-			view.copyLine();
+			c = getch();
+			if (c == KEY_ENTER or c == 10){
+				view.copyLine();
+			}
+			if (c == 'w'){
+				view.copyWord();
+			}
+			break;
+		case 'p':
+			view.insertBuffer();
 			break;
 		case 'I':
 			view.x = 0;
@@ -161,6 +169,23 @@ void Controller::proccesNavigation(int c){
 			break;
 		case 's':
 			saveNewFile(filename);
+			break;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			int num = c - '0';
+			while((c = getch()) >= '0' and c <= '9'){
+				num = num * 10 + (c - '0');
+			}
+			if (c == 'G')
+				view.moveToLine(num);
 			break;
 }
 }
@@ -213,10 +238,7 @@ MyString Controller::statusHandleInput(int c, int border){
 		case 9:
 			break;
 		default:
-			cout << 2.4 << endl;
 			view.statusAddChar(c);
-			//cout << 2.3 << endl;
-			//break;
 	}
 	view.printStatusLine();
 }
@@ -235,22 +257,26 @@ void Controller::proccesCommand(int c){
 		view.updateStatus("o ");
 		view.printStatusLine();
 		while (1){
-			cout << 1 << endl;
 			c = getch();
-			cout << 2 << endl;
-			/*if (c == KEY_EXIT or c == 27){
+			if (c == KEY_EXIT or c == 27){
 				mode = 'n';
 				return;
-			}*/
+			}
 			if (c == KEY_ENTER or c == 10){
 				saveNewFile(temp);
 				return;
 			}
-			cout << 3 << endl;
 			temp = statusHandleInput(c, 2);
-			cout << 4 << endl;
+			view.printStatusLine();
 		}
-
+	case 'x':
+		saveNewFile(filename);
+		mode = 'q';
+		return;
+	case 'w':
+		if ((c = getch()) == KEY_ENTER or c == 10)
+			saveNewFile(filename);
+		return;
 	}
 }
 

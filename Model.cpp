@@ -1,6 +1,8 @@
 #include "Model.h"
 
-Model::Model(){}
+Model::Model(){
+	buffer = "\0";
+}
 
 void Model::insertLine(MyString line, int n){
 	line = remTabs(line);
@@ -92,6 +94,6 @@ void Model::copyToBuf(int line){
 	buffer = lines[line];
 }
 
-MyString Model::getBuf(){
-	return buffer;
+void Model::insertBuf(int line, int idx){
+	lines[line].insert(idx, buffer.data(), buffer.size());
 }
